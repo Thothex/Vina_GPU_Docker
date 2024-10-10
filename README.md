@@ -1,73 +1,56 @@
 # QuickVina2-GPU with Docker and NVIDIA Container Toolkit
 
-This guide walks you through the steps to build a Docker image for CUDA, install the NVIDIA Container Toolkit, and configure QuickVina2-GPU to run with OpenCL support.
+This guide explains how to set up QuickVina2-GPU using Docker, CUDA, and the NVIDIA Container Toolkit, enabling OpenCL support for GPU acceleration.
 
-## Prerequisites
+Start by building the Docker image that includes the required CUDA and OpenCL dependencies using the following command:
 
-- Docker installed on your system
-- NVIDIA GPU drivers installed on the host machine
-- CUDA-compatible GPU
+```bash
+docker build -t my-cuda-image .
+Once the image is built, install the NVIDIA Container Toolkit to allow Docker to interact with your NVIDIA GPU. Begin by adding the GPG key:
 
-### Step 1: Build Docker Image
+bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+Next, add the NVIDIA repository to your sources list:
 
-First, build a Docker image with the necessary CUDA and OpenCL dependencies:
-
-1. docker build -t my-cuda-image .
-
-This command builds the Docker image using the Dockerfile in the current directory.
-
-### Step 2: Install NVIDIA Container Toolkit
-To allow Docker to access your NVIDIA GPU, you need to install the NVIDIA Container Toolkit. Use the following commands:
-
-2. curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
+bash
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 Ensure the experimental repository is enabled:
 
-3. sed -i -e '/experimental/ s/^#//g' /etc/apt/sources.list.d/nvidia-container-toolkit.list
+bash
+sed -i -e '/experimental/ s/^#//g' /etc/apt/sources.list.d/nvidia-container-toolkit.list
+Then, update your package list and install the NVIDIA Container Toolkit:
 
-Update your package list:
+bash
+sudo apt-get update
+sudo apt-get install -y nvidia-container-toolkit
+After installation, restart the Docker service:
 
-4. sudo apt-get update
+bash
+sudo systemctl restart docker
+Now you can run your Docker container with access to all available GPUs using:
 
-Now install the NVIDIA Container Toolkit:
+bash
+docker run --gpus all -it my-cuda-image /bin/bash
+If you previously built QuickVina2-GPU and need to clean the build directory before recompiling, run:
 
-5. sudo apt-get install -y nvidia-container-toolkit
+bash
+make clean
+To build QuickVina2-GPU from source, execute:
 
-Finally, restart the Docker service to apply the changes:
+bash
+make source
+After the build process, you need to modify the configuration file 2bm2_config.txt. Update the opencl_binary_path from:
 
-6. sudo systemctl restart docker
+bash
+opencl_binary_path = /home/shidi/Vina-GPU-2.1/QuickVina2-GPU-2.1
+to:
 
-### Step 3: Run Docker Container
-Now that your Docker image is ready and the NVIDIA Container Toolkit is installed, you can run the container with GPU support:
+bash
+opencl_binary_path = /Vina-GPU-2.1/QuickVina2-GPU-2-1
+Finally, to run QuickVina2-GPU with the updated configuration file, execute:
 
-7. docker run --gpus all -it my-cuda-image /bin/bash
-
-This command will launch the container with access to all available GPUs.
-
-### Step 4: Clean Previous Builds (Optional)
-If you have previously built QuickVina2-GPU, it's a good idea to clean the build directory before recompiling:
-
-8. make clean
-
-### Step 5: Build QuickVina2-GPU from Source
-To build QuickVina2-GPU from source, use the following command:
-
-9. make source
-
-### Step 6: Update Configuration
-In the configuration file 2bm2_config.txt, update the opencl_binary_path to the correct path. Replace:
-
-**opencl_binary_path = /home/shidi/Vina-GPU-2.1/QuickVina2-GPU-2.1
-
-With:
-
-opencl_binary_path = /Vina-GPU-2.1/QuickVina2-GPU-2-1**
-
-### Step 7: Run QuickVina2-GPU
-Now that everything is set up, you can run QuickVina2-GPU with the provided configuration file:
-
-10. ./QuickVina2-GPU-2-1 --config ./input_file_example/2bm2_config.txt
-This will execute the QuickVina2-GPU using the specified configuration.
+bash
+./QuickVina2-GPU-2-1 --config ./input_file_example/2bm2_config.txt
+This command will launch QuickVina2-GPU with the specified configuration, utilizing your GPU for the computations.
