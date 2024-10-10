@@ -44,21 +44,26 @@ Finally, restart the Docker service to apply the changes:
 Now that your Docker image is ready and the NVIDIA Container Toolkit is installed, you can run the container with GPU support:
 
 7. docker run --gpus all -it my-cuda-image /bin/bash
+
 This command will launch the container with access to all available GPUs.
 
 ### Step 4: Clean Previous Builds (Optional)
 If you have previously built QuickVina2-GPU, it's a good idea to clean the build directory before recompiling:
+
 8. make clean
 
 ### Step 5: Build QuickVina2-GPU from Source
 To build QuickVina2-GPU from source, use the following command:
+
 9. make source
 
 ### Step 6: Update Configuration
 In the configuration file 2bm2_config.txt, update the opencl_binary_path to the correct path. Replace:
 
 **opencl_binary_path = /home/shidi/Vina-GPU-2.1/QuickVina2-GPU-2.1
+
 With:
+
 opencl_binary_path = /Vina-GPU-2.1/QuickVina2-GPU-2-1**
 
 ### Step 7: Run QuickVina2-GPU
