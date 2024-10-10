@@ -25,15 +25,19 @@ To allow Docker to access your NVIDIA GPU, you need to install the NVIDIA Contai
     sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 Ensure the experimental repository is enabled:
+
 3. sed -i -e '/experimental/ s/^#//g' /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 Update your package list:
+
 4. sudo apt-get update
 
 Now install the NVIDIA Container Toolkit:
+
 5. sudo apt-get install -y nvidia-container-toolkit
 
 Finally, restart the Docker service to apply the changes:
+
 6. sudo systemctl restart docker
 
 ### Step 3: Run Docker Container
