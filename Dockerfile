@@ -24,8 +24,10 @@ RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/
     git \
     clinfo \
     opencl-headers \
+    unzip \
     libboost-program-options-dev && \
     rm -rf /var/lib/apt/lists/*
+    
 
 RUN wget https://archives.boost.io/release/1.77.0/source/boost_1_77_0.tar.gz && \
     tar -xvzf boost_1_77_0.tar.gz && \
@@ -50,3 +52,9 @@ RUN sed -i 's|^WORK_DIR=.*|WORK_DIR=/Vina-GPU-2.1/QuickVina2-GPU-2.1|' Makefile 
     sed -i 's|^BOOST_LIB_PATH=.*|BOOST_LIB_PATH=/boost_1_77_0|' Makefile && \
     sed -i 's|^OPENCL_LIB_PATH=.*|OPENCL_LIB_PATH=/usr/local/cuda|' Makefile
 
+RUN wget https://storage.yandexcloud.net/sber-projects/ligands/ligands.zip
+# Распаковываем архив в директорию input_file_examples
+RUN unzip ligands.zip -d /Vina-GPU-2.1/QuickVina2-GPU-2.1/input_file_example
+
+# Удаляем zip-файл, если больше не нужен
+RUN rm ligands.zip
