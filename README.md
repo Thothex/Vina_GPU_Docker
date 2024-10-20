@@ -5,7 +5,10 @@ This guide explains how to set up QuickVina2-GPU using Docker, CUDA, and the NVI
 Start by building the Docker image that includes the required CUDA and OpenCL dependencies using the following command:
 
 ```bash
-docker build -t my-cuda-image .
+docker build --build-arg AWS_ACCESS_KEY_ID=$(grep AWS_ACCES
+--build-arg AWS_SECRET_ACCESS_KEY=$(grep AWS_SECRET_ACCESS_KEY .env | cut -d '=' -f2) \
+             --build-arg AWS_DEFAULT_REGION=$(grep AWS_DEFAULT_REGION .env | cut -d '=' -f2) \
+             -t my-cuda-image .
 ```
 Once the image is built, install the NVIDIA Container Toolkit to allow Docker to interact with your NVIDIA GPU. Begin by adding the GPG key:
 
