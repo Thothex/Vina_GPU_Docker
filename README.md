@@ -60,7 +60,7 @@ To build QuickVina2-GPU from source, execute:
 ```bash
 make source
 ```
-After the build process, you need to modify the configuration file 2bm2_config.txt. Update the opencl_binary_path from:
+After the build process, you need to modify the configuration file of your protein. Update the opencl_binary_path from:
 
 ```bash
 opencl_binary_path = /home/shidi/Vina-GPU-2.1/QuickVina2-GPU-2.1
@@ -73,6 +73,6 @@ opencl_binary_path = /Vina-GPU-2.1/QuickVina2-GPU-2-1
 Finally, to run QuickVina2-GPU with the updated configuration file, execute:
 
 ```bash
-./QuickVina2-GPU-2-1 --config ./input_file_example/2bm2_config.txt
+./QuickVina2-GPU-2-1 --config ./input_file_example/your_protein_name_config.txt
 ```
 This command will launch QuickVina2-GPU with the specified configuration, utilizing your GPU for the computations.
