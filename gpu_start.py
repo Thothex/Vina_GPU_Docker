@@ -7,6 +7,17 @@ import re
 import boto3
 from botocore.config import Config
 
+def create_s3_session():
+    session = boto3.Session(
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        region_name=os.environ.get('AWS_DEFAULT_REGION', 'ru-central1') 
+    )
+    s3 = session.client(
+        "s3", endpoint_url=os.environ.get('S3_URL', 'https://storage.yandexcloud.net'), config=Config(signature_version="s3v4")
+    )
+    return s3
+
 def upload_file_obj_to_s3(obj, s3_uri, s3=create_s3_session()):
     s3.upload_fileobj(obj, 'sber-projects', s3_uri)
 
