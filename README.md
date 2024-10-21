@@ -5,10 +5,11 @@ This guide explains how to set up QuickVina2-GPU using Docker, CUDA, and the NVI
 Start by building the Docker image that includes the required CUDA and OpenCL dependencies using the following command:
 
 ```bash
-docker build --build-arg AWS_ACCESS_KEY_ID=$(grep AWS_ACCES
---build-arg AWS_SECRET_ACCESS_KEY=$(grep AWS_SECRET_ACCESS_KEY .env | cut -d '=' -f2) \
+docker build --build-arg AWS_ACCESS_KEY_ID=$(grep AWS_ACCESS_KEY_ID .env | cut -d '=' -f2) \
+             --build-arg AWS_SECRET_ACCESS_KEY=$(grep AWS_SECRET_ACCESS_KEY .env | cut -d '=' -f2) \
              --build-arg AWS_DEFAULT_REGION=$(grep AWS_DEFAULT_REGION .env | cut -d '=' -f2) \
-             -t my-cuda-image .
+             --build-arg S3_URL=$(grep S3_URL .env | cut -d '=' -f2) \
+             -t my-cuda-images .
 ```
 Once the image is built, install the NVIDIA Container Toolkit to allow Docker to interact with your NVIDIA GPU. Begin by adding the GPG key:
 
@@ -41,7 +42,13 @@ sudo systemctl restart docker
 Now you can run your Docker container with access to all available GPUs using:
 
 ```bash
-docker run --gpus all -it my-cuda-image /bin/bash
+docker run --gpus all \
+           -e AWS_ACCESS_KEY_ID=$(grep AWS_ACCESS_KEY_ID .env | cut -d '=' -f2) \
+           -e AWS_SECRET_ACCESS_KEY=$(grep AWS_SECRET_ACCESS_KEY .env | cut -d '=' -f2) \
+           -e AWS_DEFAULT_REGION=$(grep AWS_DEFAULT_REGION .env | cut -d '=' -f2) \
+           -e S3_URL=$(grep S3_URL .env | cut -d '=' -f2) \
+           --name my-container \
+           -it my-cuda-images /bin/bash
 ```
 If you previously built QuickVina2-GPU and need to clean the build directory before recompiling, run:
 
