@@ -1,0 +1,10 @@
+receptor = ./proteins/3con_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = 13.902
+center_y = 39.273
+center_z = -1.574
+size_x = 16.674  
+size_y = 17.706
+size_z = 20.112
+thread = 8000

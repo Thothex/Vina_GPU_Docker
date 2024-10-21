@@ -1,0 +1,10 @@
+receptor = ./proteins/4j1r_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = 11.671 
+center_y = -4.665
+center_z = 5.763
+size_x = 15.148  
+size_y = 19.624
+size_z = 18.358
+thread = 8000

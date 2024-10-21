@@ -1,0 +1,10 @@
+receptor = ./input_file_example/5vfi_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = 22.511   
+center_y = 8.28
+center_z = 1.426
+size_x = 23.766  
+size_y = 23.484
+size_z = 45.742
+thread = 8000

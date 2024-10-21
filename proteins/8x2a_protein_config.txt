@@ -1,0 +1,11 @@
+receptor = ./proteins/8x2a_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = -7.232 
+center_y = 6.491
+center_z = 26.246
+size_x = 5.778  
+size_y = 5.276
+size_z = 6.348
+thread = 8000
+  
