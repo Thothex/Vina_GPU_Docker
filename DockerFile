@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y software-properties-common && \
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3.10 get-pip.py
 
-RUN python3.10 -m pip install pandas boto3
+RUN python3.10 -m pip install tqdm pandas boto3
 
 RUN apt-get install -y \
     build-essential \
@@ -71,9 +71,10 @@ RUN rm ligands.zip
 
 RUN aws s3 cp s3://sber-projects/ligands/smiles_ligands_data.csv  /Vina-GPU-2.1/QuickVina2-GPU-2.1/smiles_ligands_data.csv  --endpoint-url=https://storage.yandexcloud.net --region ru-central1
 
-# Устанавливаем рабочую директорию
 WORKDIR /Vina-GPU-2.1/QuickVina2-GPU-2.1/
 
 RUN git clone https://github.com/Thothex/Vina_GPU_Docker.git /tmp/repo
 
 RUN mv /tmp/repo/* /tmp/repo/.* . || true && rm -rf /tmp/repo
+
+RUN make clean && make source
