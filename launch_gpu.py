@@ -5,6 +5,9 @@ import pandas as pd
 import time
 import re
 from tqdm import tqdm
+import boto3
+from botocore.config import Config
+
 
 # SELECT PROTEIN
 protein = '4j1r'
@@ -13,6 +16,21 @@ path_ligand_dir = os.path.join(os.getcwd(), 'ligands')
 path_ligand_dir_docked = os.path.join(os.getcwd(), 'docked_data_tables', f'{protein}')
 path_original_config = os.path.join(os.getcwd(), 'proteins', f'{protein}_protein_config.txt')
 path_dataset_smiles_ligand = os.path.join(os.getcwd(), 'smiles_ligands_data.csv')
+
+
+def create_s3_session():
+    session = boto3.Session(
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        region_name=os.environ.get('AWS_DEFAULT_REGION', 'ru-central1')                                      
+    )
+    s3 = session.client(
+        "s3", endpoint_url=os.environ.get('S3_URL', 'https://storage.yandexcloud.net'), config=Config(signature_version="s3v4")
+    )
+    return s3
+
+def upload_file_to_s3(path, s3_uri, s3=create_s3_session()):
+    s3.upload_file(path, 'sber-projects', s3_uri)
 
 def parse_ligand_file(file_path):
     ligand_data = {}
@@ -80,6 +98,7 @@ for dir in tqdm(selected_parts):
 
     result_df.to_csv(os.path.join(path_ligand_dir_docked, f'docked_{protein}_{dir}.csv'))
     end = time.time()
+    upload_file_to_s3(f'docked_{protein}_{dir}.csv', f'docked_{protein}_{dir}.csv')
     # ОТПРАВКА НА БАКЕТ 
     print(f'{dir.upper()} calculated and saved! It took {end-start} seconds')
 
