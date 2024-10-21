@@ -1,22 +1,25 @@
 FROM nvidia/cuda:11.5.2-devel-ubuntu20.04
 
 ENV TZ=Europe/Berlin
-# Установка нужной временной зоны и подавление интерактивного ввода
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
     apt-get install -y tzdata && \
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
+
 RUN apt-get update && apt-get install -y opencl-headers ocl-icd-libopencl1 ocl-icd-opencl-dev
-# Установка временной зоны (замените на нужную)
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/3bf863cc.pub && \
-    apt-get update && \
-    apt-get install -y tzdata && \
-    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
-    echo $TZ > /etc/timezone && \
-    dpkg-reconfigure -f noninteractive tzdata && \
-    apt-get install -y \
+
+RUN apt-get update && apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && apt-get install -y python3.10 python3.10-venv python3.10-dev curl
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3.10 get-pip.py
+
+RUN python3.10 -m pip install pandas boto3
+
+RUN apt-get install -y \
     build-essential \
     wget \
     nano \
@@ -25,9 +28,9 @@ RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/
     clinfo \
     opencl-headers \
     unzip \
+    awscli \
     libboost-program-options-dev && \
     rm -rf /var/lib/apt/lists/*
-    
 
 RUN wget https://archives.boost.io/release/1.77.0/source/boost_1_77_0.tar.gz && \
     tar -xvzf boost_1_77_0.tar.gz && \
@@ -42,19 +45,35 @@ WORKDIR /Vina-GPU-2.1/QuickVina2-GPU-2.1
 
 RUN apt update && \
     apt install -y ocl-icd-opencl-dev && \
-    apt install -y libboost-dev && \
-    apt install -y libboost-system-dev && \
-    apt install -y libboost-filesystem-dev && \
+    apt install -y libboost-system1.71-dev libboost-filesystem1.71-dev libboost-program-options1.71-dev && \
     apt install -y libnvidia-compute-535
-
 
 RUN sed -i 's|^WORK_DIR=.*|WORK_DIR=/Vina-GPU-2.1/QuickVina2-GPU-2.1|' Makefile && \
     sed -i 's|^BOOST_LIB_PATH=.*|BOOST_LIB_PATH=/boost_1_77_0|' Makefile && \
     sed -i 's|^OPENCL_LIB_PATH=.*|OPENCL_LIB_PATH=/usr/local/cuda|' Makefile
 
-RUN wget https://storage.yandexcloud.net/sber-projects/ligands/ligands.zip
-# Распаковываем архив в директорию input_file_examples
-RUN unzip ligands.zip -d /Vina-GPU-2.1/QuickVina2-GPU-2.1/input_file_example
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_DEFAULT_REGION
+ARG S3_URL
 
-# Удаляем zip-файл, если больше не нужен
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+ENV S3_URL=${S3_URL}
+
+
+RUN mkdir /Vina-GPU-2.1/QuickVina2-GPU-2.1/ligands
+
+RUN aws s3 cp s3://sber-projects/ligands/ligands.zip ligands.zip  --endpoint-url=https://storage.yandexcloud.net --region ru-central1
+RUN unzip ligands.zip -d /Vina-GPU-2.1/QuickVina2-GPU-2.1/
 RUN rm ligands.zip
+
+RUN aws s3 cp s3://sber-projects/ligands/smiles_ligands_data.csv  /Vina-GPU-2.1/QuickVina2-GPU-2.1/smiles_ligands_data.csv  --endpoint-url=https://storage.yandexcloud.net --region ru-central1
+
+# Устанавливаем рабочую директорию
+WORKDIR /Vina-GPU-2.1/QuickVina2-GPU-2.1/
+
+RUN git clone https://github.com/Thothex/Vina_GPU_Docker.git /tmp/repo
+
+RUN mv /tmp/repo/* /tmp/repo/.* . || true && rm -rf /tmp/repo
