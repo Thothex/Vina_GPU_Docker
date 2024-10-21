@@ -4,6 +4,8 @@ This guide explains how to set up QuickVina2-GPU using Docker, CUDA, and the NVI
 
 Start by building the Docker image that includes the required CUDA and OpenCL dependencies using the following command:
 
+DON'T forget to add the keys to the your .env file (nano .env)
+
 ```bash
 docker build --build-arg AWS_ACCESS_KEY_ID=$(grep AWS_ACCESS_KEY_ID .env | cut -d '=' -f2) \
              --build-arg AWS_SECRET_ACCESS_KEY=$(grep AWS_SECRET_ACCESS_KEY .env | cut -d '=' -f2) \
@@ -52,27 +54,9 @@ docker run --gpus all \
 ```
 If you previously built QuickVina2-GPU and need to clean the build directory before recompiling, run:
 
-```bash
-make clean
-```
-To build QuickVina2-GPU from source, execute:
-
-```bash
-make source
-```
-After the build process, you need to modify the configuration file of your protein. Update the opencl_binary_path from:
-
-```bash
-opencl_binary_path = /home/shidi/Vina-GPU-2.1/QuickVina2-GPU-2.1
-```
-to:
-
-```bash
-opencl_binary_path = /Vina-GPU-2.1/QuickVina2-GPU-2-1
-```
 Finally, to run QuickVina2-GPU with the updated configuration file, execute:
 
 ```bash
-./QuickVina2-GPU-2-1 --config ./input_file_example/your_protein_name_config.txt
+python3.10 launch_gpu.py
 ```
 This command will launch QuickVina2-GPU with the specified configuration, utilizing your GPU for the computations.
