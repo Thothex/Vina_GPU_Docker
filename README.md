@@ -56,7 +56,11 @@ If you previously built QuickVina2-GPU and need to clean the build directory bef
 
 Finally, to run QuickVina2-GPU with the updated configuration file, execute:
 
-!!! Change name of your protein, before launch
+!!! Change name of your protein, before launch in the file launch_gpu.py 
+# SELECT PROTEIN
+protein = 'your_protein'
+
+
 ```bash
 python3.10 launch_gpu.py
 ```
