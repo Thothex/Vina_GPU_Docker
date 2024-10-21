@@ -18,8 +18,8 @@ def create_s3_session():
     )
     return s3
 
-def upload_file_obj_to_s3(obj, s3_uri, s3=create_s3_session()):
-    s3.upload_fileobj(obj, 'sber-projects', s3_uri)
+def upload_file_to_s3(path, s3_uri, s3=create_s3_session()):
+    s3.upload_file(path, 'sber-projects', s3_uri)
 
 # поменять пути
 path_ligand_dir = '/Vina-GPU-2.1/QuickVina2-GPU-2.1/ligands'
@@ -87,7 +87,7 @@ for dir in selected_parts:
     df['Ligand'] = df['Ligand'].astype(str)   
     result_df = pd.merge(df, smiles_ligand_dataframe, on='Ligand', how='left')
     result_df.to_csv(os.path.join(path_ligand_dir_docked, f'docked_4j1r_protein_new_{dir}.csv'))
-    upload_file_obj_to_s3(result_df, f'docked_4j1r_protein_new_{dir}.csv')
+    upload_file_to_s3(f'docked_4j1r_protein_new_{dir}.csv', f'docked_4j1r_protein_new_{dir}.csv')
     print(f'READY {dir}!!!')
 
 
