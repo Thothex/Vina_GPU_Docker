@@ -98,7 +98,7 @@ for dir in tqdm(selected_parts):
 
     result_df.to_csv(os.path.join(path_ligand_dir_docked, f'docked_{protein}_{dir}.csv'))
     end = time.time()
-    upload_file_to_s3(f'docked_{protein}_{dir}.csv', f'docked_{protein}_{dir}.csv')
+    upload_file_to_s3(os.path.join(path_ligand_dir_docked, f'docked_{protein}_{dir}.csv'), f'docked_{protein}_{dir}.csv')
     # ОТПРАВКА НА БАКЕТ 
     print(f'{dir.upper()} calculated and saved! It took {end-start} seconds')
 
