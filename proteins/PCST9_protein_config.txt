@@ -1,0 +1,10 @@
+receptor = ./proteins/PCST9_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = 45.875 
+center_y = 23.181
+center_z = 38.486
+size_x = 27.75  
+size_y = 28.5
+size_z = 24.75
+thread = 8000

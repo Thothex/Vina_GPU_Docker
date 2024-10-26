@@ -8,4 +8,3 @@ size_x = 5.778
 size_y = 5.276
 size_z = 6.348
 thread = 8000
-  

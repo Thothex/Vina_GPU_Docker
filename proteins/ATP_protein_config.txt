@@ -1,0 +1,11 @@
+receptor = ./proteins/ATP_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = 99.497		
+center_y = 99.117
+center_z = 58.981
+size_x = 30		
+size_y = 25.5
+size_z = 32.25
+thread = 8000
+				

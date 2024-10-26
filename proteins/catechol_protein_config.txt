@@ -1,0 +1,11 @@
+receptor = ./proteins/catechol_protein.pdbqt
+ligand_directory = ./test_2
+opencl_binary_path = ./Vina-GPU-2.1/QuickVina2-GPU-2.1
+center_x = -0.264 
+center_y = -2.061
+center_z = -12.263
+size_x = 22.5  
+size_y = 22.5
+size_z = 22.5
+thread = 8000
+		
